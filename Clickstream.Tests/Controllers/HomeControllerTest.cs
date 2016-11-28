@@ -366,5 +366,19 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+		[Test]
+		public void PixelShouldOnlyAcceptHttpGet()
+		{
+			var method = typeof(Pixel).GetMethod("Index");
+			var attribute = method.GetCustomAttributes(typeof(HttpGetAttribute), false);
+			Assert.IsNotNull(attribute);
+		}
+
+		[Test]
+		public void ResponseShouldNotBeCached() 
+		{
+			
+		}
+
 	}
 }

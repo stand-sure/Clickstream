@@ -55,7 +55,9 @@
 			var cookies = context.Response.Cookies;
 			var javaScriptSerializer = new
 				System.Web.Script.Serialization.JavaScriptSerializer();
-			string page = context.Request.UrlReferrer.ToString();
+			var urlReferrer = context.Request.UrlReferrer;
+
+			string page = urlReferrer != null ? urlReferrer.ToString() : string.Empty;
 			var queryValues = HttpUtility.ParseQueryString(context.Request.Url.Query);
 			string previousPage = queryValues["dr"];
 			string userAgent = context.Request.UserAgent;
@@ -83,9 +85,11 @@
 			return values;
 		}
 
+		[HttpGet]
+		[OutputCache(Duration = -1)]
 		public ActionResult Index()
 		{
-			byte[] bytes = new byte[0];
+			byte[] bytes = new byte[1] { 0 };
 
 			UpdateCookies(HttpContext);
 
