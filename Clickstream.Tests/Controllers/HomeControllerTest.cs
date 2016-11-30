@@ -45,6 +45,11 @@
 			context.SetupGet(ctx => ctx.Response).Returns(response.Object);
 		}
 
+		void SetUpRequestContext()
+		{
+			rc = new RequestContext(context.Object, new RouteData());
+		}
+
 		[SetUp]
 		public void Init()
 		{
@@ -52,8 +57,7 @@
 			SetUpRequest(cookies);
 			SetUpResponse(cookies);
 			SetUpHttpContext();
-
-			rc = new RequestContext(context.Object, new RouteData());
+			SetUpRequestContext();
 		}
 
 		[Test]
