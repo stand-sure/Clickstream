@@ -18,28 +18,40 @@
 
 		RequestContext rc;
 
-		[SetUp]
-		public void Init()
-		{
+		void SetUpRequest(HttpCookieCollection cookies) { 
 			request = new Mock<HttpRequestBase>(MockBehavior.Strict);
-			var cookies = new HttpCookieCollection();
+
 			request.SetupGet(req => req.Cookies).Returns(cookies);
 			var uri = new Uri("https://www.example.com/pixel?dr=https%3A%2F%2Fwww.example.com");
 			request.SetupGet(req => req.Url).Returns(uri);
 			var referrer = new Uri("https://www.example.com/referrer");
 			request.SetupGet(req => req.UrlReferrer).Returns(referrer);
 			request.SetupGet(req => req.UserAgent).Returns("my browser");
+		}
 
-
+		void SetUpResponse(HttpCookieCollection cookies)
+		{
 			response = new Mock<HttpResponseBase>(MockBehavior.Strict);
 			response.SetupGet(resp => resp.Cookies).Returns(cookies);
 			response.Setup(resp =>
 			   resp.SetCookie(It.IsAny<HttpCookie>()))
 				.Callback<HttpCookie>((cookie) => cookies.Add(cookie));
+		}
 
+		void SetUpHttpContext()
+		{
 			context = new Mock<HttpContextBase>(MockBehavior.Strict);
 			context.SetupGet(ctx => ctx.Request).Returns(request.Object);
 			context.SetupGet(ctx => ctx.Response).Returns(response.Object);
+		}
+
+		[SetUp]
+		public void Init()
+		{
+			var cookies = new HttpCookieCollection();
+			SetUpRequest(cookies);
+			SetUpResponse(cookies);
+			SetUpHttpContext();
 
 			rc = new RequestContext(context.Object, new RouteData());
 		}
