@@ -5,10 +5,12 @@
   using System.Linq;
   using System.Web;
   using System.Web.Mvc;
+  using SessionStateBehavior = System.Web.SessionState.SessionStateBehavior;
 
     /// <summary>
     /// Test page controller.
     /// </summary>
+    [SessionState(SessionStateBehavior.Disabled)]
     public class TestPageController : Controller
     {
     /// <summary>
