@@ -4,8 +4,21 @@
 	using System.Web;
 	using System.Web.Mvc;
 
+  /// <summary>
+  /// Home controller.
+  /// </summary>
 	public class HomeController : Controller
 	{
+
+    #region cookie helpers
+
+    /// <summary>
+    /// Sets the cookie.
+    /// </summary>
+    /// <param name="context">The HttpContext.</param>
+    /// <param name="name">The cookie name.</param>
+    /// <param name="value">The cookie value.</param>
+    /// <param name="permanent">If set to <c>true</c> the the cookie is made permanent.</param>
 		static void SetCookie(HttpContextBase context, string name, string value = "", bool permanent = false)
 		{
 			var cookie = context.Request.Cookies.Get(name) ?? new HttpCookie(name);
@@ -18,12 +31,22 @@
 			context.Response.SetCookie(cookie);
 		}
 
+    /// <summary>
+    /// Gets the cookie value.
+    /// </summary>
+    /// <returns>The cookie value.</returns>
+    /// <param name="context">The HttpContext.</param>
+    /// <param name="name">The cookie name.</param>
 		static string GetCookieValue(HttpContextBase context, string name)
 		{
 			var cookies = context.Request.Cookies;
 			return (cookies.Get(name) ?? new HttpCookie("foo", string.Empty)).Value;
 		}
 
+    /// <summary>
+    /// Updates the cookies.
+    /// </summary>
+    /// <param name="context">The HttpContext.</param>
 		static void UpdateCookies(HttpContextBase context)
 		{
 			string seqText = GetCookieValue(context, "seq");
@@ -50,6 +73,15 @@
 			SetCookie(context, "sid", Guid.NewGuid().ToString());
 		}
 
+    #endregion
+
+    #region value serialization and logging helpers
+
+    /// <summary>
+    /// Serializes the cookie values to JSON.
+    /// </summary>
+    /// <returns>The a JSON string.</returns>
+    /// <param name="context">The HttpContext.</param>
 		public virtual string SerializeValues(HttpContextBase context)
 		{
 			var cookies = context.Response.Cookies;
@@ -79,12 +111,26 @@
 			return jsonString;
 		}
 
+    /// <summary>
+    /// Logs the values.
+    /// </summary>
+    /// <returns>The values.</returns>
+    /// <param name="context">Context.</param>
 		public virtual string LogValues(HttpContextBase context)
 		{
 			var values = SerializeValues(HttpContext);
+
+      // TODO: implemement logging as suits your environment.
+
 			return values;
 		}
 
+    #endregion
+
+    /// <summary>
+    /// Updates cookies, logs the values and returns an image.
+    /// This endpoint is intended to be called by JavaScript in the client HTML.
+    /// </summary>
 		[HttpGet]
 		[OutputCache(Duration = -1)]
 		public ActionResult Index()
