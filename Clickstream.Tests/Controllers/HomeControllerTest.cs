@@ -12,12 +12,19 @@
 	[TestFixture]
 	public class PixelControllerTestClass
 	{
+
+    #region SetUp
+
 		Mock<HttpRequestBase> request;
 		Mock<HttpResponseBase> response;
 		Mock<HttpContextBase> context;
 
 		RequestContext rc;
 
+    /// <summary>
+    /// Sets up request.
+    /// </summary>
+    /// <param name="cookies">Cookies.</param>
 		void SetUpRequest(HttpCookieCollection cookies) { 
 			request = new Mock<HttpRequestBase>(MockBehavior.Strict);
 
@@ -29,6 +36,10 @@
 			request.SetupGet(req => req.UserAgent).Returns("my browser");
 		}
 
+    /// <summary>
+    /// Sets up response.
+    /// </summary>
+    /// <param name="cookies">Cookies.</param>
 		void SetUpResponse(HttpCookieCollection cookies)
 		{
 			response = new Mock<HttpResponseBase>(MockBehavior.Strict);
@@ -38,6 +49,9 @@
 				.Callback<HttpCookie>((cookie) => cookies.Add(cookie));
 		}
 
+    /// <summary>
+    /// Sets up http context.
+    /// </summary>
 		void SetUpHttpContext()
 		{
 			context = new Mock<HttpContextBase>(MockBehavior.Strict);
@@ -45,11 +59,18 @@
 			context.SetupGet(ctx => ctx.Response).Returns(response.Object);
 		}
 
+    /// <summary>
+    /// Sets up request context.
+    /// </summary>
 		void SetUpRequestContext()
 		{
 			rc = new RequestContext(context.Object, new RouteData());
 		}
 
+    /// <summary>
+    /// A method called just before each test method.
+    /// Initializes contexts.
+    /// </summary>
 		[SetUp]
 		public void Init()
 		{
@@ -60,6 +81,13 @@
 			SetUpRequestContext();
 		}
 
+    #endregion
+
+    #region Return Value Tests
+
+    /// <summary>
+    /// A test to verfiy that a file is returned.
+    /// </summary>
 		[Test]
 		public void PixelShouldReturnAFile()
 		{
@@ -70,6 +98,9 @@
 			Assert.IsInstanceOf<FileContentResult>(actual, "Expected a FileResult");
 		}
 
+    /// <summary>
+    /// A test to verify that the MIME type returned is "image/png".
+    /// </summary>
 		[Test]
 		public void PixelShouldReturnPng()
 		{
@@ -82,6 +113,9 @@
 			Assert.AreEqual(expected, actual, "Expected a PNG image");
 		}
 
+    /// <summary>
+    /// A test to verify that cookies are returned.
+    /// </summary>
 		[Test]
 		public void PixelShouldReturnCookies()
 		{
@@ -94,6 +128,13 @@
 			Assert.IsNotNull(cookies, "No cookies");
 		}
 
+    #endregion
+
+    /// <summary>
+    /// Gets an HttpCookie from the response.
+    /// </summary>
+    /// <returns>The cookie.</returns>
+    /// <param name="name">The Name of the cookie.</param>
 		HttpCookie GetCookie(string name)
 		{
 			var controller = new Pixel();
@@ -104,6 +145,11 @@
 			return cookies.Get(name);
 		}
 
+    #region Tests to verify that specifc cookies are set
+
+    /// <summary>
+    /// A test to verify that a cookie with name "cid" is set.
+    /// </summary>
 		[Test]
 		public void PixelShouldSetCidCookie()
 		{
@@ -111,6 +157,9 @@
 			Assert.IsNotNull(actual);
 		}
 
+    /// <summary>
+    /// A test to verify that a cookie with name "sid" is set.
+    /// </summary>
 		[Test]
 		public void PixelShouldSetSidCookie()
 		{
@@ -118,6 +167,9 @@
 			Assert.IsNotNull(actual);
 		}
 
+    /// <summary>
+    /// A test to verify that a cookie with name "sc" is set.
+    /// </summary>
 		[Test]
 		public void PixelShouldSetScCookie()
 		{
@@ -125,12 +177,17 @@
 			Assert.IsNotNull(actual);
 		}
 
+    /// <summary>
+    /// A test to verify that a cookie with name "seq" is set.
+    /// </summary>
 		[Test]
 		public void PixelShouldSetSeqCookie()
 		{
 			var actual = GetCookie("seq");
 			Assert.IsNotNull(actual);
 		}
+
+    #endregion
 
 		[Test]
 		public void PixelShouldIncrementSequenceCookie()
@@ -221,6 +278,13 @@
 			Assert.AreEqual(expected, actual);
 		}
 
+    #region cookie value type tests
+
+    /// <summary>
+    /// Verifies that the cookie value is a GUID.
+    /// </summary>
+    /// <returns><c>true</c>, if value should be was a GUID, <c>false</c> otherwise.</returns>
+    /// <param name="name">The cookie name.</param>
 		bool CookieValueShouldBeAGuid(string name)
 		{
 			HttpCookie cookie = GetCookie(name) ?? new HttpCookie("f00");
@@ -230,6 +294,23 @@
 			return retVal;
 		}
 
+    /// <summary>
+    /// Verifies that the cookie value is an int.
+    /// </summary>
+    /// <returns><c>true</c>, if the value is an int, <c>false</c> otherwise.</returns>
+    /// <param name="name">Name.</param>
+    bool CookieValueShouldBeAnInt(string name)
+    {
+      HttpCookie cookie = GetCookie(name) ?? new HttpCookie("foo");
+      string text = cookie.Value;
+      int val;
+      bool retVal = int.TryParse(text, out val);
+      return retVal;
+    }
+
+    /// <summary>
+    /// A test to confirm that the sid value is a GUID.
+    /// </summary>
 		[Test]
 		public void SidShouldBeGuid()
 		{
@@ -237,6 +318,9 @@
 			Assert.IsTrue(actual, "sid should be a GUID");
 		}
 
+    /// <summary>
+    /// A test to confirm that the cid value is a GUID.
+    /// </summary>
 		[Test]
 		public void CidShouldBeGuid()
 		{
@@ -244,15 +328,9 @@
 			Assert.IsTrue(actual, "cid should be a GUID");
 		}
 
-		bool CookieValueShouldBeAnInt(string name)
-		{
-			HttpCookie cookie = GetCookie(name) ?? new HttpCookie("foo");
-			string text = cookie.Value;
-			int val;
-			bool retVal = int.TryParse(text, out val);
-			return retVal;
-		}
-
+    /// <summary>
+    /// A test to verify that the seq cookie value is an int.
+    /// </summary>
 		[Test]
 		public void SeqShouldBeAnInteger()
 		{
@@ -260,12 +338,17 @@
 			Assert.IsTrue(actual);
 		}
 
+    /// <summary>
+    /// A test to verify that the sc cookie value is an int.
+    /// </summary>
 		[Test]
 		public void ScShouldBeAnInteger()
 		{
 			bool actual = CookieValueShouldBeAnInt("sc");
 			Assert.IsTrue(actual);
 		}
+
+    #endregion
 
 		bool CookieIsSessionOnly(string cookieName)
 		{
