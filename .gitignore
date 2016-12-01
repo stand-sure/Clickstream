@@ -75,3 +75,6 @@ _[Ss]cripts
 *.ncrunchsolution
 *.dot[Cc]over
 *.userprefs
+Doxyfile
+html/
+latex/
