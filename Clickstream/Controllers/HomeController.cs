@@ -9,6 +9,7 @@
   /// </summary>
 	public class HomeController : Controller
 	{
+    static string DOMAIN = "localexample.com"; // TODO: change this to your root domain
 
     #region cookie helpers
 
@@ -28,6 +29,8 @@
 				cookie.Expires = new DateTime(2099, 12, 31, 23, 59, 59);
 			}
 
+      cookie.HttpOnly = true;
+      cookie.Domain = DOMAIN;
 			context.Response.SetCookie(cookie);
 		}
 

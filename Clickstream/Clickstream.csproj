@@ -79,11 +79,14 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include="Views\TestPage\Index.aspx" />
+    <Content Include="scripts\index.html" />
+    <Content Include="scripts\mocha.css" />
+    <Content Include="scripts\mocha.js" />
+    <Content Include="scripts\tests.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
