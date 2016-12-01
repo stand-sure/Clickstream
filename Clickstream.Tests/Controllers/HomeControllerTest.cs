@@ -189,6 +189,11 @@
 
     #endregion
 
+    #region Tests to verify cookie value update behavior.
+
+    /// <summary>
+    /// A test to verify the the sequence cookie (seq) is incremented.
+    /// </summary>
 		[Test]
 		public void PixelShouldIncrementSequenceCookie()
 		{
@@ -213,6 +218,9 @@
 			Assert.AreEqual(expected, actual, "Sequence should increment");
 		}
 
+    /// <summary>
+    /// A test to verify that the session count (sc) cookie is incremented if there is no session ID (sid).
+    /// </summary>
 		[Test]
 		public void PixelShouldIncrementSessionCountIfNoSid()
 		{
@@ -233,6 +241,9 @@
 			Assert.AreEqual(expected, actual);
 		}
 
+    /// <summary>
+    /// A test to verfiy that the session count cookie (sc) is not increment if there is a session id (sid).
+    /// </summary>
 		[Test]
 		public void PixelShouldNotIncrementSessionCountIfSidSet()
 		{
@@ -258,6 +269,9 @@
 			Assert.AreEqual(expected, actual);
 		}
 
+    /// <summary>
+    /// A test to verify that the client id (cid) is not changed if it has already been set.
+    /// </summary>
 		[Test]
 		public void PixelShouldNotSetNewCidIfAlreadySet()
 		{
@@ -277,6 +291,8 @@
 			var actual = cookie.Value;
 			Assert.AreEqual(expected, actual);
 		}
+
+    #endregion
 
     #region cookie value type tests
 
@@ -350,6 +366,13 @@
 
     #endregion
 
+    #region Cookie persistense tests
+
+    /// <summary>
+    /// Verifies that a cookie is session only.
+    /// </summary>
+    /// <returns><c>true</c>, if is the cookie is session only, <c>false</c> otherwise.</returns>
+    /// <param name="cookieName">Cookie name.</param>
 		bool CookieIsSessionOnly(string cookieName)
 		{
 			HttpCookie cookie = GetCookie(cookieName);
@@ -357,30 +380,49 @@
 			return retVal;
 		}
 
+    /// <summary>
+    /// A test to verify that the cid cookie is permanent.
+    /// </summary>
 		[Test]
 		public void CidShouldBeAPermanentCookie()
 		{
 			Assert.False(CookieIsSessionOnly("cid"));
 		}
 
+    /// <summary>
+    /// A test to verify that the sid cookie is session-only.
+    /// </summary>
 		[Test]
 		public void SidShouldBeATemporaryCookie()
 		{
 			Assert.True(CookieIsSessionOnly("sid"));
 		}
 
+    /// <summary>
+    /// A test to verify that the sc cookie is permanent.
+    /// </summary>
 		[Test]
 		public void ScShouldBeAPermanentCookie()
 		{
 			Assert.False(CookieIsSessionOnly("sc"));
 		}
 
+    /// <summary>
+    /// A test to verify that the seq cookie is session-only.
+    /// </summary>
 		[Test]
 		public void SeqShouldBeATemporaryCookie()
 		{
 			Assert.True(CookieIsSessionOnly("seq"));
 		}
 
+    #endregion
+
+    #region Tests to verfiy that certain helper methods are called
+
+    /// <summary>
+    /// A test to verify that LogValues is called.
+    /// </summary>
 		[Test]
 		public void IndexShouldCallLogValues()
 		{
@@ -390,6 +432,9 @@
 			mock.Verify(foo => foo.LogValues(It.IsAny<HttpContextBase>()));
 		}
 
+    /// <summary>
+    /// A test to verfiy that Serialize Values is called.
+    /// </summary>
 		[Test]
 		public void IndexShouldCallSerializeValues()
 		{
@@ -398,6 +443,8 @@
 			mock.Object.Index();
 			mock.Verify(foo => foo.SerializeValues(It.IsAny<HttpContextBase>()));
 		}
+
+    #endregion
 
 		bool JsonContainsKey(string name)
 		{
