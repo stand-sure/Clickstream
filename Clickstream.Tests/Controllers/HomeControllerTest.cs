@@ -191,6 +191,16 @@ namespace Clickstream.Tests
 			Assert.IsNotNull(actual);
 		}
 
+    /// <summary>
+    /// Verifies that an attempt to get cookie with empty name should 
+    /// fail gracefully.
+    /// </summary>
+    [Test]
+    public void AttemptsToGetCookieWithEmptyNameShouldFailGracefully()
+    {
+      Assert.DoesNotThrow(() => GetCookie(string.Empty));
+    }
+
     #endregion
 
     #region Tests to verify cookie value update behavior.
