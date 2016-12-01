@@ -1,4 +1,5 @@
-﻿namespace Clickstream.Tests
+﻿
+namespace Clickstream.Tests
 {
 	using System;
 	//	using System.Linq;
@@ -9,6 +10,9 @@
 	using NUnit.Framework;
 	using Pixel = Controllers.HomeController;
 
+  /// <summary>
+  /// Pixel controller test class.
+  /// </summary>
 	[TestFixture]
 	public class PixelControllerTestClass
 	{
@@ -446,6 +450,13 @@
 
     #endregion
 
+    #region serialization tests
+
+    /// <summary>
+    /// A helper method to verfify that the JSON contains the key name.
+    /// </summary>
+    /// <returns><c>true</c>, if contains key was found in the JSON, <c>false</c> otherwise.</returns>
+    /// <param name="name">The key name.</param>
 		bool JsonContainsKey(string name)
 		{
 			var controller = new Pixel();
@@ -456,6 +467,9 @@
 			return retVal;
 		}
 
+    /// <summary>
+    /// A test to verify that the client ID (cid) is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeCid()
 		{
@@ -463,6 +477,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that the session ID (sid) is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeSid()
 		{
@@ -470,6 +487,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that the sequence count (seq) is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeSeq()
 		{
@@ -477,6 +497,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that session count (sc) is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeSc()
 		{
@@ -484,6 +507,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that call time is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeTime()
 		{
@@ -491,6 +517,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that the calling page is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludePage()
 		{
@@ -498,6 +527,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that the previous page is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludePreviousPage()
 		{
@@ -505,6 +537,9 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    /// <summary>
+    /// A test to verify that UserAgent is serialized.
+    /// </summary>
 		[Test]
 		public void SerializedValuesShouldIncludeUserAgent()
 		{
@@ -512,6 +547,13 @@
 			Assert.IsTrue(JsonContainsKey(name));
 		}
 
+    #endregion
+
+    #region Index attribute tests for HttpGet and OutputCache
+
+    /// <summary>
+    /// A test to verify that Index only accepts HTTP GET.
+    /// </summary>
 		[Test]
 		public void PixelShouldOnlyAcceptHttpGet()
 		{
@@ -520,6 +562,9 @@
 			Assert.IsNotNull(attribute);
 		}
 
+    /// <summary>
+    /// A test to verify that the Response is not cached.
+    /// </summary>
 		[Test]
 		public void ResponseShouldNotBeCached() 
 		{
@@ -529,6 +574,8 @@
 			Assert.IsNotNull(attribute);
 			Assert.LessOrEqual(attribute.Duration, 0);
 		}
+
+    #endregion
 
 	}
 }
