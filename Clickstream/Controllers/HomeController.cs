@@ -73,7 +73,7 @@
 			var cid = GetCookieValue(context, "cid");
 			SetCookie(context, "cid", string.IsNullOrEmpty(cid) ? Guid.NewGuid().ToString() : cid, permanent: true);
 
-			SetCookie(context, "sid", Guid.NewGuid().ToString());
+      SetCookie(context, "sid", String.IsNullOrEmpty(sid) ? Guid.NewGuid().ToString() : sid);
 		}
 
     #endregion
