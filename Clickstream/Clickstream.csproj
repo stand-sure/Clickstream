@@ -93,7 +93,7 @@
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
-        <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+        <XspParameters Port="8080" Address="127.0.0.1" SslMode="Enable" SslProtocol="Default" KeyType="Pkcs12" CertFile="" KeyFile="/Users/cjanderson/Projects/Clickstream/localexample.12" PasswordOptions="Store" Password="s3kr3t" Verbose="True" />
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>

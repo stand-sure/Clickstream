@@ -31,6 +31,7 @@
 
       cookie.HttpOnly = true;
       cookie.Domain = DOMAIN;
+      cookie.Secure = true;
 			context.Response.SetCookie(cookie);
 		}
 

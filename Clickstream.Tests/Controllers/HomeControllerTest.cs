@@ -649,6 +649,24 @@ namespace Clickstream.Tests
       });
     }
 
+    /// <summary>
+    /// A test to verify that cookies are marked secure.
+    /// </summary>
+    [Test]
+    public void CookiesShouldBeSecure() {
+      var controller = new Pixel();
+      controller.ControllerContext = new ControllerContext(rc, controller);
+      controller.Index();
+
+      var cookies = controller.Response.Cookies.AllKeys
+                              .Select(key => GetCookie(key))
+                              .ToArray();
+      cookies.ForEach(cookie =>
+      {
+        Assert.IsTrue(cookie.Secure);
+      });
+    }
+
     #endregion
 
   }
