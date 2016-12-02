@@ -78,3 +78,7 @@ _[Ss]cripts
 Doxyfile
 html/
 latex/
+# Certificates
+*.cer
+*.key
+*.12
