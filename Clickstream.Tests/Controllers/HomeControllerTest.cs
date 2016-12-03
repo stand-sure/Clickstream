@@ -45,6 +45,8 @@ namespace Clickstream.Tests
 
     RequestContext rc;
 
+    Pixel controller;
+
     /// <summary>
     /// Sets up request.
     /// </summary>
@@ -93,6 +95,15 @@ namespace Clickstream.Tests
     }
 
     /// <summary>
+    /// Sets up the Pixel controller.
+    /// </summary>
+    void SetUpController()
+    {
+      controller = new Pixel();
+      controller.ControllerContext = new ControllerContext(rc, controller);
+    }
+
+    /// <summary>
     /// A method called just before each test method.
     /// Initializes contexts.
     /// </summary>
@@ -104,6 +115,7 @@ namespace Clickstream.Tests
       SetUpResponse(cookies);
       SetUpHttpContext();
       SetUpRequestContext();
+      SetUpController();
     }
 
     #endregion
@@ -116,9 +128,6 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldReturnAFile()
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       var actual = controller.Index();
       Assert.IsInstanceOf<FileContentResult>(actual, "Expected a FileResult");
     }
@@ -129,10 +138,8 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldReturnPng()
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       var result = controller.Index() as FileContentResult;
+      Assert.IsNotNull(result);
       var actual = result.ContentType;
       var expected = "image/png";
       Assert.AreEqual(expected, actual, "Expected a PNG image");
@@ -144,10 +151,6 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldReturnCookies()
     {
-
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       controller.Index();
       var cookies = controller.Response.Cookies;
       Assert.IsNotNull(cookies, "No cookies");
@@ -162,9 +165,6 @@ namespace Clickstream.Tests
     /// <param name="name">The Name of the cookie.</param>
 		HttpCookie GetCookie(string name)
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       controller.Index();
       var cookies = controller.Response.Cookies;
       return cookies.Get(name);
@@ -233,9 +233,7 @@ namespace Clickstream.Tests
     public void PixelShouldIncrementSequenceCookie()
     {
       const string name = "seq";
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
+     
       controller.Index();
       var cookies = controller.Response.Cookies;
       var cookie = cookies.Get(name);
@@ -260,8 +258,6 @@ namespace Clickstream.Tests
     public void PixelShouldIncrementSessionCountIfNoSid()
     {
       const string name = "sc";
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.ControllerContext
         .HttpContext
         .Request
@@ -283,8 +279,6 @@ namespace Clickstream.Tests
     public void PixelShouldNotIncrementSessionCountIfSidSet()
     {
       const string name = "sc";
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.ControllerContext
         .HttpContext
         .Request
@@ -312,8 +306,6 @@ namespace Clickstream.Tests
     {
       const string name = "cid";
       string expected = (new Random()).Next().ToString();
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.ControllerContext
         .HttpContext
         .Request
@@ -335,8 +327,6 @@ namespace Clickstream.Tests
     {
       const string name = "sid";
       string expected = (new Random()).Next().ToString();
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.ControllerContext
         .HttpContext
         .Request

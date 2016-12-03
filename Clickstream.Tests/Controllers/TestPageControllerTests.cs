@@ -141,12 +141,16 @@ namespace Clickstream.Tests
     [Test]
     public void IndexShouldAccessCookies()
     {
-      var mock = new Mock<TestPage> { CallBase = true };
-      mock.Object.ControllerContext = new ControllerContext(rc, mock.Object);
-      mock.Object.Index();
+      var mockController = new Mock<TestPage> { CallBase = false };
+      var mockHttpContext = new Mock<HttpContextBase>(MockBehavior.Strict);
+      var mockHttpRequest = new Mock<HttpRequestBase>(MockBehavior.Strict);
+      mockHttpRequest.SetupGet(req => req.Cookies).Returns(new HttpCookieCollection());
+      mockHttpContext.SetupGet(ctx => ctx.Request).Returns(mockHttpRequest.Object);
+      var requestContext = new RequestContext(mockHttpContext.Object, new RouteData());
 
-      mock.Verify(foo => foo.HttpContext.Request.Cookies);
-
+      mockController.Object.ControllerContext = new ControllerContext(requestContext, mockController.Object);
+      mockController.Object.Index();
+      mockHttpRequest.VerifyGet(req => req.Cookies);
     }
   }
 }
