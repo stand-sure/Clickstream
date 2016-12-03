@@ -625,7 +625,7 @@ namespace Clickstream.Tests
     public void ResponseShouldNotBeCached()
     {
       var method = typeof(Pixel).GetMethod("Index");
-      OutputCacheAttribute attribute = method.GetCustomAttributes(typeof(OutputCacheAttribute), false)[0]
+      var attribute = method.GetCustomAttributes(typeof(OutputCacheAttribute), false)[0]
                                              as OutputCacheAttribute;
       Assert.IsNotNull(attribute);
       Assert.LessOrEqual(attribute.Duration, 0);

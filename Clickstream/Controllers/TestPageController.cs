@@ -1,6 +1,5 @@
 ﻿namespace Clickstream.Controllers
 {
-  using System.Collections.Generic;
   using System.Linq;
   using System.Web.Mvc;
   using SessionStateBehavior = System.Web.SessionState.SessionStateBehavior;
@@ -16,11 +15,11 @@
     /// </summary>
     public ActionResult Index()
     {
-      var cookies = this.HttpContext.Request.Cookies;
+      var cookies = HttpContext.Request.Cookies;
       var model = cookies.AllKeys.Select(name => new
       {
         name,
-        value = cookies.Get(name).Value.ToString()
+        value = cookies.Get(name).Value
       });
 
       return View(model);

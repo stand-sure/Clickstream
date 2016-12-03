@@ -74,7 +74,7 @@
 			var cid = GetCookieValue(context, "cid");
 			SetCookie(context, "cid", string.IsNullOrEmpty(cid) ? Guid.NewGuid().ToString() : cid, permanent: true);
 
-      SetCookie(context, "sid", String.IsNullOrEmpty(sid) ? Guid.NewGuid().ToString() : sid);
+      SetCookie(context, "sid", string.IsNullOrEmpty(sid) ? Guid.NewGuid().ToString() : sid);
 		}
 
     #endregion
@@ -139,7 +139,7 @@
 		[OutputCache(Duration = -1)]
 		public ActionResult Index()
 		{
-			byte[] bytes = new byte[1] { 0 };
+			var bytes = new byte[] { 0 };
 
 			UpdateCookies(HttpContext);
 
