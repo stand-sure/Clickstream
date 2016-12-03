@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
+    <Compile Include="Controllers\TestPageControllerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -327,6 +327,31 @@ namespace Clickstream.Tests
       Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// A test to verify that the session id (sid) is not changed if it has already been set.
+    /// </summary>
+    [Test]
+    public void PixelShouldNotSetNewSidIfAlreadySet()
+    {
+      const string name = "sid";
+      string expected = (new Random()).Next().ToString();
+      var controller = new Pixel();
+      controller.ControllerContext = new ControllerContext(rc, controller);
+      controller.ControllerContext
+        .HttpContext
+        .Request
+        .Cookies
+        .Set(new HttpCookie(name, expected));
+
+      controller.Index();
+      var cookies = controller.Response.Cookies;
+      var cookie = cookies.Get(name) ?? new HttpCookie("f00", "abcde");
+      var actual = cookie.Value;
+      Assert.AreEqual(expected, actual);
+    }
+
+
+
     #endregion
 
     #region cookie value type tests
