@@ -20,7 +20,7 @@
       <script>
 	    (function (w, undefined) {
 	      "use strict";
-	      var l = w.location
+	      var l = w.location;
 	      if (l.hostname !== "www.localexample.com") {
 		    w.location = "//www.localexample.com:" + l.port + l.pathname;
 	      }

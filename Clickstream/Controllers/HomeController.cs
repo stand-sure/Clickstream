@@ -36,46 +36,77 @@
 		}
 
     /// <summary>
-    /// Gets the cookie value.
+    /// Gets the cookie value from the request.
     /// </summary>
     /// <returns>The cookie value.</returns>
     /// <param name="context">The HttpContext.</param>
     /// <param name="name">The cookie name.</param>
-		static string GetCookieValue(HttpContextBase context, string name)
+    static string GetCookieValueFromRequest(HttpContextBase context, string name)
 		{
 			var cookies = context.Request.Cookies;
 			return (cookies.Get(name) ?? new HttpCookie("foo", string.Empty)).Value;
 		}
 
     /// <summary>
-    /// Updates the cookies.
+    /// Increments the sequence value.
+    /// </summary>
+    /// <param name="context">The HttpContext.</param>
+    static void IncrementSequence(HttpContextBase context)
+    {
+      string seqText = GetCookieValueFromRequest(context, "seq");
+      if (string.IsNullOrEmpty(seqText))
+      {
+        seqText = "0";
+      }
+      var seq = int.Parse(seqText);
+      SetCookie(context, "seq", (seq + 1).ToString());
+    }
+
+    /// <summary>
+    /// Increments the session count if no session identifier.
+    /// </summary>
+    /// <param name="context">The HttpContext.</param>
+    /// <param name="sid">The session ID.</param>
+    static void IncrementSessionCountIfNoSessionID(HttpContextBase context, string sid)
+    {
+      string scText = GetCookieValueFromRequest(context, "sc");
+      var sc = int.Parse(string.IsNullOrEmpty(scText) ? "0" : scText);
+      if (string.IsNullOrEmpty(sid))
+      {
+        sc += 1;
+      }
+
+      SetCookie(context, "sc", sc.ToString(), permanent: true);
+    }
+
+    /// <summary>
+    /// Sets the client identifier if not previously assigned.
+    /// </summary>
+    /// <param name="context">The HttpContext.</param>
+    static void SetClientIdIfNotPreviouslyAssigned(HttpContextBase context)
+    {
+      var cid = GetCookieValueFromRequest(context, "cid");
+      SetCookie(context, "cid", string.IsNullOrEmpty(cid) ? Guid.NewGuid().ToString() : cid, permanent: true);
+    }
+
+    static void SetSessionIdIfNotPreviouslySet(HttpContextBase context, string sid)
+    {
+      SetCookie(context, "sid", string.IsNullOrEmpty(sid) ? Guid.NewGuid().ToString() : sid);
+    }
+
+    /// <summary>
+    /// Updates the cookie values.
     /// </summary>
     /// <param name="context">The HttpContext.</param>
 		static void UpdateCookies(HttpContextBase context)
-		{
-			string seqText = GetCookieValue(context, "seq");
-			if (string.IsNullOrEmpty(seqText))
-			{
-				seqText = "0";
-			}
-			var seq = int.Parse(seqText);
-			SetCookie(context, "seq", (seq + 1).ToString());
+    {
+      var sid = GetCookieValueFromRequest(context, "sid");
 
-			var sid = GetCookieValue(context, "sid");
-			string scText = GetCookieValue(context, "sc");
-			var sc = int.Parse(string.IsNullOrEmpty(scText) ? "0" : scText);
-			if (string.IsNullOrEmpty(sid))
-			{
-				sc += 1;
-			}
-
-			SetCookie(context, "sc", sc.ToString(), permanent: true);
-
-			var cid = GetCookieValue(context, "cid");
-			SetCookie(context, "cid", string.IsNullOrEmpty(cid) ? Guid.NewGuid().ToString() : cid, permanent: true);
-
-      SetCookie(context, "sid", string.IsNullOrEmpty(sid) ? Guid.NewGuid().ToString() : sid);
-		}
+      IncrementSequence(context);
+      IncrementSessionCountIfNoSessionID(context, sid);
+      SetClientIdIfNotPreviouslyAssigned(context);
+      SetSessionIdIfNotPreviouslySet(context, sid);
+    }
 
     #endregion
 
@@ -86,7 +117,7 @@
     /// </summary>
     /// <returns>The a JSON string.</returns>
     /// <param name="context">The HttpContext.</param>
-		public virtual string SerializeValues(HttpContextBase context)
+    public virtual string SerializeValues(HttpContextBase context)
 		{
 			var cookies = context.Response.Cookies;
 			var javaScriptSerializer = new
