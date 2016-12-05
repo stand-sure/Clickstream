@@ -56,9 +56,19 @@ namespace Clickstream.Tests
       request = new Mock<HttpRequestBase>(MockBehavior.Strict);
 
       request.SetupGet(req => req.Cookies).Returns(cookies);
-      var uri = new Uri("https://www.example.com/pixel?dr=https%3A%2F%2Fwww.example.com");
+      var uri = new Uri("https://www.example.com/pixel?" +
+                        "&utm_source=google" +
+                        "&utm_medium=cpc" +
+                        "&utm_term=clickstream" +
+                        "&utm_campaign=analytics" +
+                        "&dr=https%3A%2F%2Fwww.example.com");
       request.SetupGet(req => req.Url).Returns(uri);
-      var referrer = new Uri("https://www.example.com/referrer");
+      var referrer = new Uri("https://www.example.com/referrer?" + 
+                        "&utm_source=google" +
+                        "&utm_medium=cpc" +
+                        "&utm_term=clickstream" +
+                        "&utm_campaign=analytics" +
+                        "&dr=https%3A%2F%2Fwww.example.com");
       request.SetupGet(req => req.UrlReferrer).Returns(referrer);
       request.SetupGet(req => req.UserAgent).Returns("my browser");
     }
@@ -607,6 +617,22 @@ namespace Clickstream.Tests
     }
 
     /// <summary>
+    /// A test to verify that the page is properly set
+    /// </summary>
+    [Test]
+    public void PageIsProperlySet()
+    {
+      string name = "page";
+      string value = "https://www.example.com/referrer?" + 
+        "&utm_source=google" +
+        "&utm_medium=cpc" +
+        "&utm_term=clickstream" +
+        "&utm_campaign=analytics" +
+        "&dr=https:%2F%2Fwww.example.com";
+      Assert.IsTrue(JsonContainsValue(name, value));
+    }
+
+    /// <summary>
     /// A test to verify that UserAgent is serialized.
     /// </summary>
 		[Test]
@@ -654,9 +680,6 @@ namespace Clickstream.Tests
     [Test]
     public void AllCookiesShouldBeHTTPOnly()
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       controller.Index();
       var cookies = controller.Response.Cookies.AllKeys
                               .Select(key => GetCookie(key))
@@ -674,9 +697,6 @@ namespace Clickstream.Tests
     [Test]
     public void AllCookiesShouldHaveDomainSet()
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
-
       controller.Index();
       var cookies = controller.Response.Cookies.AllKeys
                               .Select(key => GetCookie(key))
@@ -692,8 +712,6 @@ namespace Clickstream.Tests
     /// </summary>
     [Test]
     public void CookiesShouldBeSecure() {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.Index();
 
       var cookies = controller.Response.Cookies.AllKeys
