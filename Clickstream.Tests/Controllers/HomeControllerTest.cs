@@ -505,11 +505,23 @@ namespace Clickstream.Tests
     /// <param name="name">The key name.</param>
 		bool JsonContainsKey(string name)
     {
-      var controller = new Pixel();
-      controller.ControllerContext = new ControllerContext(rc, controller);
       controller.Index();
       string json = controller.SerializeValues(controller.HttpContext);
       bool retVal = json.Contains("\"" + name + "\":");
+      return retVal;
+    }
+
+    /// <summary>
+    /// A helper method to verify that the JSON contains the key-value pair.
+    /// </summary>
+    /// <returns><c>true</c>, if contains value was found, <c>false</c> otherwise.</returns>
+    /// <param name="name">The key name.</param>
+    /// <param name="value">The value.</param>
+    bool JsonContainsValue(string name, string value)
+    {
+      controller.Index();
+      string json = controller.SerializeValues(controller.HttpContext);
+      bool retVal = json.Contains("\"" + name + "\":\"" + value + "\"");
       return retVal;
     }
 
@@ -581,6 +593,17 @@ namespace Clickstream.Tests
     {
       const string name = "previousPage";
       Assert.IsTrue(JsonContainsKey(name));
+    }
+
+    /// <summary>
+    /// A test to verify that the previous page is properly set.
+    /// </summary>
+    [Test]
+    public void PreviousPageIsProperlySet()
+    {
+      string name = "previousPage";
+      string value = "https://www.example.com";
+      Assert.IsTrue(JsonContainsValue(name, value));
     }
 
     /// <summary>
