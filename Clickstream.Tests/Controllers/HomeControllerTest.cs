@@ -34,7 +34,7 @@ namespace Clickstream.Tests
   /// Pixel controller test class.
   /// </summary>
   [TestFixture]
-  public class PixelControllerTestClass
+  public class PixelControllerTestClass : AssertionHelper
   {
 
     #region SetUp
@@ -188,8 +188,7 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldSetCidCookie()
     {
-      var actual = GetCookie("cid");
-      Assert.IsNotNull(actual);
+      Expect(GetCookie("cid"), Is.Not.Null);
     }
 
     /// <summary>
@@ -198,8 +197,7 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldSetSidCookie()
     {
-      var actual = GetCookie("sid");
-      Assert.IsNotNull(actual);
+      Expect(GetCookie("sid"), Is.Not.Null);
     }
 
     /// <summary>
@@ -208,8 +206,7 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldSetScCookie()
     {
-      var actual = GetCookie("sc");
-      Assert.IsNotNull(actual);
+      Expect(GetCookie("sc"), Is.Not.Null);
     }
 
     /// <summary>
@@ -218,8 +215,7 @@ namespace Clickstream.Tests
 		[Test]
     public void PixelShouldSetSeqCookie()
     {
-      var actual = GetCookie("seq");
-      Assert.IsNotNull(actual);
+      Expect(GetCookie("seq"), Is.Not.Null);
     }
 
     /// <summary>
@@ -257,8 +253,8 @@ namespace Clickstream.Tests
         .Set(cookie);
       controller.Index();
       cookies = controller.Response.Cookies;
-      var actual = int.Parse(cookies.Get(name).Value);
-      Assert.AreEqual(expected, actual, "Sequence should increment");
+
+      Expect(int.Parse(cookies.Get(name).Value), Is.EqualTo(expected));
     }
 
     /// <summary>
@@ -277,9 +273,8 @@ namespace Clickstream.Tests
       controller.Index();
       var cookies = controller.Response.Cookies;
       var cookie = cookies.Get(name) ?? new HttpCookie("f00", "0");
-      var actual = int.Parse(cookie.Value);
-      var expected = 2;
-      Assert.AreEqual(expected, actual);
+
+      Expect(int.Parse(cookie.Value), Is.EqualTo(2));
     }
 
     /// <summary>
@@ -303,9 +298,8 @@ namespace Clickstream.Tests
       controller.Index();
       var cookies = controller.Response.Cookies;
       var cookie = cookies.Get(name) ?? new HttpCookie("f00", "0");
-      var actual = int.Parse(cookie.Value);
-      var expected = 1;
-      Assert.AreEqual(expected, actual);
+
+      Expect(int.Parse(cookie.Value), Is.EqualTo(1));
     }
 
     /// <summary>
@@ -325,8 +319,8 @@ namespace Clickstream.Tests
       controller.Index();
       var cookies = controller.Response.Cookies;
       var cookie = cookies.Get(name) ?? new HttpCookie("f00", "abcde");
-      var actual = cookie.Value;
-      Assert.AreEqual(expected, actual);
+
+      Expect(cookie.Value, Is.EqualTo(expected));
     }
 
     /// <summary>
@@ -346,8 +340,8 @@ namespace Clickstream.Tests
       controller.Index();
       var cookies = controller.Response.Cookies;
       var cookie = cookies.Get(name) ?? new HttpCookie("f00", "abcde");
-      var actual = cookie.Value;
-      Assert.AreEqual(expected, actual);
+
+      Expect(cookie.Value, Is.EqualTo(expected));
     }
 
 
@@ -390,8 +384,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SidShouldBeGuid()
     {
-      bool actual = CookieValueShouldBeAGuid("sid");
-      Assert.IsTrue(actual, "sid should be a GUID");
+      Expect(CookieValueShouldBeAGuid("sid"), "Expected a GUID");
     }
 
     /// <summary>
@@ -400,8 +393,7 @@ namespace Clickstream.Tests
 		[Test]
     public void CidShouldBeGuid()
     {
-      bool actual = CookieValueShouldBeAGuid("cid");
-      Assert.IsTrue(actual, "cid should be a GUID");
+      Expect(CookieValueShouldBeAGuid("cid"), "cid should be a GUID");
     }
 
     /// <summary>
@@ -410,8 +402,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SeqShouldBeAnInteger()
     {
-      bool actual = CookieValueShouldBeAnInt("seq");
-      Assert.IsTrue(actual);
+      Expect(CookieValueShouldBeAnInt("seq"));
     }
 
     /// <summary>
@@ -420,8 +411,7 @@ namespace Clickstream.Tests
 		[Test]
     public void ScShouldBeAnInteger()
     {
-      bool actual = CookieValueShouldBeAnInt("sc");
-      Assert.IsTrue(actual);
+      Expect(CookieValueShouldBeAnInt("sc"));
     }
 
     #endregion
@@ -446,7 +436,7 @@ namespace Clickstream.Tests
 		[Test]
     public void CidShouldBeAPermanentCookie()
     {
-      Assert.False(CookieIsSessionOnly("cid"));
+      Expect(CookieIsSessionOnly("cid"), Is.False);
     }
 
     /// <summary>
@@ -455,7 +445,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SidShouldBeATemporaryCookie()
     {
-      Assert.True(CookieIsSessionOnly("sid"));
+      Expect(CookieIsSessionOnly("sid"), Is.True);
     }
 
     /// <summary>
@@ -464,7 +454,7 @@ namespace Clickstream.Tests
 		[Test]
     public void ScShouldBeAPermanentCookie()
     {
-      Assert.False(CookieIsSessionOnly("sc"));
+      Expect(CookieIsSessionOnly("sc"), Is.False);
     }
 
     /// <summary>
@@ -473,7 +463,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SeqShouldBeATemporaryCookie()
     {
-      Assert.True(CookieIsSessionOnly("seq"));
+      Expect(CookieIsSessionOnly("seq"), Is.True);
     }
 
     #endregion
@@ -541,8 +531,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeCid()
     {
-      const string name = "cid";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("cid"), Is.True);
     }
 
     /// <summary>
@@ -551,8 +540,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeSid()
     {
-      const string name = "sid";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("sid"), Is.True);
     }
 
     /// <summary>
@@ -561,8 +549,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeSeq()
     {
-      const string name = "seq";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("seq"), Is.True);
     }
 
     /// <summary>
@@ -571,8 +558,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeSc()
     {
-      const string name = "sc";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("sc"), Is.True);
     }
 
     /// <summary>
@@ -581,8 +567,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeTime()
     {
-      const string name = "time";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("time"), Is.True);
     }
 
     /// <summary>
@@ -591,8 +576,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludePage()
     {
-      const string name = "page";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("page"), Is.True);
     }
 
     /// <summary>
@@ -601,8 +585,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludePreviousPage()
     {
-      const string name = "previousPage";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("previousPage"), Is.True);
     }
 
     /// <summary>
@@ -611,9 +594,7 @@ namespace Clickstream.Tests
     [Test]
     public void PreviousPageIsProperlySet()
     {
-      string name = "previousPage";
-      string value = "https://www.example.com";
-      Assert.IsTrue(JsonContainsValue(name, value));
+      Expect(JsonContainsValue("previousPage", "https://www.example.com"), Is.True);
     }
 
     /// <summary>
@@ -622,14 +603,13 @@ namespace Clickstream.Tests
     [Test]
     public void PageIsProperlySet()
     {
-      string name = "page";
       string value = "https://www.example.com/referrer?" + 
         "&utm_source=google" +
         "&utm_medium=cpc" +
         "&utm_term=clickstream" +
         "&utm_campaign=analytics" +
         "&dr=https:%2F%2Fwww.example.com";
-      Assert.IsTrue(JsonContainsValue(name, value));
+      Expect(JsonContainsValue("page", value), Is.True);
     }
 
     /// <summary>
@@ -638,8 +618,7 @@ namespace Clickstream.Tests
 		[Test]
     public void SerializedValuesShouldIncludeUserAgent()
     {
-      const string name = "userAgent";
-      Assert.IsTrue(JsonContainsKey(name));
+      Expect(JsonContainsKey("userAgent"), Is.True);
     }
 
     #endregion
@@ -654,7 +633,7 @@ namespace Clickstream.Tests
     {
       var method = typeof(Pixel).GetMethod("Index");
       var attribute = method.GetCustomAttributes(typeof(HttpGetAttribute), false);
-      Assert.IsNotNull(attribute);
+      Expect(attribute, Is.Not.Null.Or.Empty);
     }
 
     /// <summary>
@@ -666,8 +645,8 @@ namespace Clickstream.Tests
       var method = typeof(Pixel).GetMethod("Index");
       var attribute = method.GetCustomAttributes(typeof(OutputCacheAttribute), false)[0]
                                              as OutputCacheAttribute;
-      Assert.IsNotNull(attribute);
-      Assert.LessOrEqual(attribute.Duration, 0);
+      Expect(attribute, Is.Not.Null);
+      Expect(attribute.Duration, Is.LessThanOrEqualTo(0));
     }
 
     #endregion
@@ -686,7 +665,7 @@ namespace Clickstream.Tests
                               .ToArray();
       cookies.ForEach(cookie =>
       {
-        Assert.IsTrue(cookie.HttpOnly);
+        Expect(cookie.HttpOnly, Is.True);
       });
 
     }
@@ -703,7 +682,7 @@ namespace Clickstream.Tests
                               .ToArray();
       cookies.ForEach(cookie =>
       {
-        Assert.IsFalse(string.IsNullOrEmpty(cookie.Domain));
+        Expect(cookie.Domain, Is.Not.Null.Or.Empty);
       });
     }
 
@@ -719,7 +698,7 @@ namespace Clickstream.Tests
                               .ToArray();
       cookies.ForEach(cookie =>
       {
-        Assert.IsTrue(cookie.Secure);
+        Expect(cookie.Secure, Is.True);
       });
     }
 
