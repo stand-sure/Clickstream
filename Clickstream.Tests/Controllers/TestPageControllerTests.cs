@@ -33,7 +33,7 @@ namespace Clickstream.Tests
   /// Test page controller tests.
   /// </summary>
   [TestFixture]
-  public class TestPageControllerTests
+  public class TestPageControllerTests : AssertionHelper
   {
     #region SetUp
 
@@ -115,9 +115,7 @@ namespace Clickstream.Tests
       var controller = new TestPage();
       controller.ControllerContext = new ControllerContext(rc, controller);
 
-      var result = controller.Index();
-      Type expected = typeof(ViewResult);
-      Assert.IsInstanceOf(expected, result);
+      Expect(controller.Index(), Is.InstanceOf<ViewResult>());
     }
 
     /// <summary>
@@ -130,9 +128,9 @@ namespace Clickstream.Tests
       controller.ControllerContext = new ControllerContext(rc, controller);
 
       var result = (controller.Index() as ViewResult).Model;
-      Assert.IsNotNull(result);
 
-      Assert.IsTrue(result is IEnumerable<dynamic>);
+      Expect(result, Is.Not.Null);
+      Expect(result, Is.InstanceOf<IEnumerable<dynamic>>());
     }
 
     /// <summary>
