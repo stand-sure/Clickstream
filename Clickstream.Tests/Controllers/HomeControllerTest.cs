@@ -633,7 +633,7 @@ namespace Clickstream.Tests
     {
       var method = typeof(Pixel).GetMethod("Index");
       var attribute = method.GetCustomAttributes(typeof(HttpGetAttribute), false);
-      Expect(attribute, Is.Not.Null.Or.Empty);
+      Expect(attribute, Is.Not.Empty);
     }
 
     /// <summary>
@@ -643,8 +643,13 @@ namespace Clickstream.Tests
     public void ResponseShouldNotBeCached()
     {
       var method = typeof(Pixel).GetMethod("Index");
-      var attribute = method.GetCustomAttributes(typeof(OutputCacheAttribute), false)[0]
-                                             as OutputCacheAttribute;
+      var attributes = method.GetCustomAttributes(typeof(OutputCacheAttribute), false);
+
+      Expect(attributes, Is.Not.Empty);
+      Expect(attributes, Has.Length.EqualTo(1));
+
+      var attribute = attributes[0] as OutputCacheAttribute;
+
       Expect(attribute, Is.Not.Null);
       Expect(attribute.Duration, Is.LessThanOrEqualTo(0));
     }
